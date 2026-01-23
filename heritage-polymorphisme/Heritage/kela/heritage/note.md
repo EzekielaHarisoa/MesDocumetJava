@@ -1,0 +1,1 @@
+* ne jamais instancier une methode ou une class final
