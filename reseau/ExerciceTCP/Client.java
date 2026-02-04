@@ -1,38 +1,50 @@
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client{
-    public static void main(String[] args){
-        int port = 8585;
-        String host = "localhost";
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("veuillmer identifier votre connection : \n Port: ");
+        int port = sc.nextInt();
+        sc.nextLine();
+        System.out.print("  Host : ");
+        String host = sc.nextLine();
         String hafatra, hafatraAlefa;
+
         try {
-            Socket svc = new Socket(host, port);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            PrintWriter writer = new PrintWriter(svc.getOutputStream(),true);   
-            int fin=0;
-            do { 
-                hafatra = reader.readLine();
-                hafatraAlefa = hafatra + "\n";
-                writer.write(hafatraAlefa);
-                writer.flush();
-                if(hafatra.contains("exit")){
-                    fin=1;
-                    break;
-                }
-
-            } while (fin==0);
-            svc.close();
-                
-            writer.println("Cocou, je suis un client 1");
-            System.out.println( "la reponse du serveur est \t"+reader.readLine());
            
+            Socket soc = new Socket(host,port);
+            System.out.println("Connection au serveur reussi");
+           
+            OutputStreamWriter sortie = new OutputStreamWriter(soc.getOutputStream());
+            System.out.println("Vuillez entrer votre message :");
+            
+            BufferedReader msg = new BufferedReader(new InputStreamReader(System.in));
+           
+            int fin =0;
+           
+            do { 
+              hafatra = msg.readLine();
+              hafatraAlefa = hafatra + "\n";
+
+              sortie.write(hafatraAlefa);
+              sortie.flush();
+              if(hafatra.contains("fermer")){
+                fin = 1;
+                break;
+              }
+
+            } while (fin == 0);
+            soc.close();
+
         } catch (Exception e) {
-            System.out.println("[ERREUR]" + e);
+            e.printStackTrace();
         }
     }
 }
